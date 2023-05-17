@@ -1,5 +1,4 @@
-require('dotenv').config()
-require('dotenv').config({ path: '.env-outputs' })
+const AWS = require('aws-sdk');
 
 const we_invoke_confirmUserSignup = async (username, name, email) => {
   const handler = require('../../functions/confirm-user-signup').handler;
@@ -27,6 +26,38 @@ const we_invoke_confirmUserSignup = async (username, name, email) => {
   await handler(event, context);
 };
 
+const a_user_signs_up = async (password, name, email) => {
+  const cognito = new AWS.CognitoIdentityServiceProvider();
+  const userPoolId = process.env.CognitoUserPoolId;
+  const clientId = process.env.WebCognitoUserPoolClientId;
+
+  const signUpResp = await cognito.signUp({
+    ClientId: clientId,
+    Username: email,
+    Password: password,
+    UserAttributes: [
+      { Name: 'name', Value: name }
+    ]
+  }).promise();
+  
+  const username = signUpResp.UserSub;
+  console.log(`[${email}] - user has signed up [${username}]`)
+
+  await cognito.adminConfirmSignUp({
+    UserPoolId: userPoolId,
+    Username: username,
+  }).promise();
+
+  console.log(`[${email}] - confirmed signed up.`)
+
+  return {
+    username,
+    name,
+    email
+  }
+};
+
 module.exports = {
-  we_invoke_confirmUserSignup
+  we_invoke_confirmUserSignup,
+  a_user_signs_up
 }

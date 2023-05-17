@@ -3,7 +3,7 @@ const DocumentClient = new DynamoDB.DocumentClient();
 const Chance = require('chance');
 const chance = new Chance();
 
-const { USER_TABLE } = process.env;
+const { USERS_TABLE } = process.env;
 
 module.exports.handler = async (event) => {
   if(event.triggerSource === 'PostConfirmation_ConfirmSignUp') {
@@ -21,12 +21,17 @@ module.exports.handler = async (event) => {
       likesCount: 0
     };
 
-    await DocumentClient.put({
-      TableName: USER_TABLE,
-      Item: user,
-      ConditionExpression: 'attribute_not_exists(id)'
-    })
-    return event;
+    try {
+      const result = await DocumentClient.put({
+        TableName: USERS_TABLE,
+        Item: user,
+        ConditionExpression: 'attribute_not_exists(id)'
+      }).promise();
+
+      return event;
+    } catch(e) {
+      throw e;
+    }
   } 
 
   return event;
