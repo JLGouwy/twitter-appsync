@@ -80,7 +80,7 @@ type MyProfile implements IProfile {
   website: AWSURL
   birthdate: AWSDate
   createdAt: AWSDateTime!
-  tweets: TweetsPage
+  tweets: TweetsPage!
   followersCount: Int!
   followingCount: Int!
   tweetsCount: Int!

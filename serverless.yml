@@ -46,7 +46,6 @@ functions:
           - dynamodb:PutItem        
         Resource: !GetAtt UsersTable.Arn
 
-# you can add CloudFormation resource templates here
 resources:
   Resources:
     UsersTable:
