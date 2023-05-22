@@ -73,7 +73,6 @@ const a_user_signs_up = async (password, name, email) => {
   }
 };
 
-
 const a_user_calls_getMyProfile = async (user) => {
   const getMyProfile = `query getMyProfile {
     getMyProfile {
@@ -102,9 +101,39 @@ const a_user_calls_getMyProfile = async (user) => {
   return profile
 }
 
+const a_user_calls_editMyProfile = async (user, input) => {
+  const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
+    editMyProfile(newProfile: $input) {
+      id
+      backgroundImageUrl
+      bio
+      birthdate
+      createdAt
+      followersCount
+      followingCount
+      imageUrl
+      likesCount
+      location
+      name
+      screenName
+      website
+      tweetsCount
+    }
+  }`
+  const variables = { input }
+
+  const data = await GraphQL(process.env.API_URL, editMyProfile, variables, user.accessToken)
+  const profile = data.editMyProfile
+
+  console.log(`[${user.username}] - edited profile`)
+
+  return profile
+}
+
 module.exports = {
   we_invoke_confirmUserSignup,
   a_user_signs_up,
   we_invoke_an_appsync_template,
-  a_user_calls_getMyProfile
+  a_user_calls_getMyProfile,
+  a_user_calls_editMyProfile
 }

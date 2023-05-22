@@ -11,7 +11,7 @@ describe('Given an authenticated user', () => {
     user = await given.an_authenticated_user()
   })
 
-  fit('The user can fetch his profile with getMyProfile', async () => {
+  it('The user can fetch his profile with getMyProfile', async () => {
     profile = await when.a_user_calls_getMyProfile(user)
 
     expect(profile).toMatchObject({
@@ -29,6 +29,21 @@ describe('Given an authenticated user', () => {
       followingCount: 0,
       tweetsCount: 0,
       likesCount: 0,
+    });
+
+    const [firstName, lastName] = profile.name.split(' ');
+    expect(profile.screenName).toContain(firstName);
+    expect(profile.screenName).toContain(lastName);
+  });
+
+  it('The user can edit his profile with editMyProfile', async () => {
+    const newName = chance.first();
+    const input = { name: newName };
+    const newProfile = await when.a_user_calls_editMyProfile(user, input)
+
+    expect(newProfile).toMatchObject({
+      ...profile,
+      name: newName
     });
 
     const [firstName, lastName] = profile.name.split(' ');
