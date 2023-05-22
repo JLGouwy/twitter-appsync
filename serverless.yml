@@ -6,6 +6,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-export-env
   - serverless-export-outputs
+  - serverless-manifest-plugin
 
 provider:
   name: aws
@@ -25,10 +26,15 @@ custom:
       - CognitoUserPoolId
       - WebCognitoUserPoolClientId
     output:
-      file: ./.env-outputs
+      file: ./.envoutputs
       format: toml
   appSync:
     - ${file(serverless.appsync-api.yml)}
+  manifest:
+    postProcess: ./processManifest.js
+    disablePostDeployGeneration: true
+    disableOutput: true
+    silent: true
 
 package:
   exclude:
@@ -110,5 +116,7 @@ resources:
       Value: ${self:custom.region}
     CognitoUserPoolId:
       Value: !Ref CognitoUserPool
+    CognitoUserPoolArn:
+      Value: !GetAtt CognitoUserPool.Arn
     WebCognitoUserPoolClientId:
       Value: !Ref WebUserPoolClient
