@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "exportEnv": "sls export-env --aws-profile=jlgouwy && sls manifest --aws-profile=jlgouwy",
+    "exportEnv": "export SLS_DEBUG=1 && sls export-env --aws-profile=jlgouwy --overwrite --all && sls manifest --aws-profile=jlgouwy",
     "test": "cross-env IWB_PROFILE='jlgouwy' jest --verbose ./__tests__/test_cases/unit",
     "integration-test": "cross-env IWB_PROFILE='jlgouwy' jest --verbose ./__tests__/test_cases/integration",
     "e2e-test": "cross-env IWB_PROFILE='jlgouwy' jest --verbose ./__tests__/test_cases/e2e"
@@ -37,6 +37,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "chance": "^1.1.11",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "ulid": "^2.3.0"
   }
 }
